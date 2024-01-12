@@ -7,8 +7,7 @@ include(cmake/FindHIPToolkit.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(CUDASieve
-    src/main.cpp
+add_library(CUDASieveLib SHARED
     src/HIPSieve/device.hip
     src/HIPSieve/global.hip
     src/HIPSieve/hipsieve.cpp
@@ -18,13 +17,16 @@ add_executable(CUDASieve
     src/HIPSieve/primeoutlist.hip
 )
 
-target_link_libraries(CUDASieve PRIVATE HIP::hiprt)
-target_include_directories(CUDASieve PRIVATE include)
-target_compile_options(CUDASieve PRIVATE -fgpu-rdc)
-target_link_options(CUDASieve PRIVATE -fgpu-rdc)
+target_link_libraries(CUDASieveLib PUBLIC HIP::hiprt)
+target_include_directories(CUDASieveLib PUBLIC include)
+target_compile_options(CUDASieveLib PRIVATE -fgpu-rdc)
+target_link_options(CUDASieveLib PRIVATE -fgpu-rdc)
 
+add_executable(CUDASieve src/main.cpp)
+target_link_libraries(CUDASieve PRIVATE CUDASieveLib)
 
-install(TARGETS CUDASieve
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+add_executable(CUDASieveBenchmark samples/benchmark.hip)
+target_link_libraries(CUDASieveBenchmark PRIVATE CUDASieveLib)
+
+add_executable(CUDASieveSumPrimes samples/sumPrimes.hip)
+target_link_libraries(CUDASieveSumPrimes PRIVATE CUDASieveLib)
