@@ -8,3 +8,4 @@ cstest
 libcudasieve.a
 samples/sumPrimes
 samples/benchmark
+CMakeLists.txt.user*
