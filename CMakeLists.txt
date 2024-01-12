@@ -6,7 +6,6 @@ include(cmake/FindHIPToolkit.cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(HIP_SEPARABLE_COMPILATION ON)
 
 add_executable(CUDASieve
     src/main.cpp
